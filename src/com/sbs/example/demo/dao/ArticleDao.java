@@ -160,7 +160,7 @@ public class ArticleDao {
 		sb.append(String.format("DELETE FROM article "));
 		sb.append(String.format(" WHERE id = '%d'", number));
 
-		return dbConnection.insert(sb.toString());
+		return dbConnection.delete(sb.toString());
 
 	}
 
