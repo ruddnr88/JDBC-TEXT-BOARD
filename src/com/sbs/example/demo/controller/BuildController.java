@@ -19,5 +19,6 @@ public class BuildController extends Controller {
 
 	private void actionSite(Request reqeust) {
 		buildService.buildSite();
+		System.out.println("사이트를 생성했습니다!");
 	}
 }

@@ -48,14 +48,26 @@ public class ArticleService {
 
 	public void makeBoardIfNotExists(String name, String code) {
 		Board board = articleDao.getBoardByCode(code);
-		
-		if ( board == null ) {
+
+		if (board == null) {
 			makeBoard(name, code);
 		}
 	}
 
 	public Board getBoardByCode(String boardCode) {
 		return articleDao.getBoardByCode(boardCode);
+	}
+
+	public int isExistArticle(int number) {
+		return articleDao.isExistArticle(number);
+	}
+
+	public int modifyArticle(int number, String title, String body) {
+		return articleDao.modifyArticle(number, title, body);
+	}
+
+	public int deleteArticle(int number) {
+		return articleDao.deleteArticle(number);
 	}
 
 }

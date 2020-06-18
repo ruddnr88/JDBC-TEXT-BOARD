@@ -20,7 +20,7 @@ public class DBConnection {
 	public static int DB_PORT;
 
 	public void connect() {
-		String url = "jdbc:mysql://localhost:" + DB_PORT + "/" + DB_NAME + "?serverTimezone=UTC";
+		String url = "jdbc:mysql://localhost:" + DB_PORT + "/" + DB_NAME + "?serverTimezone=Asia/Seoul";
 		String user = DB_USER;
 		String password = DB_PASSWORD;
 		String driverName = "com.mysql.cj.jdbc.Driver";

@@ -132,4 +132,36 @@ public class ArticleDao {
 		return articles;
 	}
 
+	public int isExistArticle(int number) {
+		List<Article> articles = getArticles();
+		for (Article a : articles) {
+			if (a.getId() == number) {
+				if (a.getMemberId() == Factory.getSession().getLoginedMember().getId()) {
+					return number;
+				}
+				return 0;
+			}
+		}
+		return -1;
+	}
+
+	public int modifyArticle(int number, String title, String body) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("UPDATE article "));
+		sb.append(String.format("SET title = '%s'", title));
+		sb.append(String.format(", `body` = '%s'", body));
+		sb.append(String.format(" WHERE id = '%d'", number));
+		
+		return dbConnection.update(sb.toString());		
+	}
+
+	public int deleteArticle(int number) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("DELETE FROM article "));
+		sb.append(String.format(" WHERE id = '%d'", number));
+
+		return dbConnection.insert(sb.toString());
+
+	}
+
 }
