@@ -1,5 +1,6 @@
 package com.sbs.example.demo.controller;
 
+import com.sbs.example.demo.dto.Article;
 import com.sbs.example.demo.dto.Board;
 import com.sbs.example.demo.dto.Member;
 
@@ -8,6 +9,7 @@ import com.sbs.example.demo.dto.Member;
 // 이 안의 정보는 사용자가 프로그램을 사용할 때 동안은 계속 유지된다.
 public class Session {
 	private Member loginedMember;
+	private Article currentArticle;
 	private Board currentBoard;
 
 	public Member getLoginedMember() {
@@ -21,6 +23,16 @@ public class Session {
 	public Board getCurrentBoard() {
 		return currentBoard;
 	}
+	
+	public Article getCurrentArticle() {
+		return currentArticle;
+	}
+	
+
+	public void setCurrentArticle(Article currentArticle) {
+		this.currentArticle = currentArticle;
+	}
+	
 
 	public void setCurrentBoard(Board currentBoard) {
 		this.currentBoard = currentBoard;

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.sbs.example.demo.db.DBConnection;
 import com.sbs.example.demo.dto.Article;
+import com.sbs.example.demo.dto.ArticleReply;
 import com.sbs.example.demo.dto.Board;
 import com.sbs.example.demo.factory.Factory;
 
@@ -30,11 +31,11 @@ public class ArticleDao {
 
 		List<Article> articles = new ArrayList<>();
 		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
-		
-		for ( Map<String, Object> row : rows ) {
+
+		for (Map<String, Object> row : rows) {
 			articles.add(new Article(row));
 		}
-		
+
 		return articles;
 	}
 
@@ -48,11 +49,11 @@ public class ArticleDao {
 
 		List<Board> boards = new ArrayList<>();
 		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
-		
-		for ( Map<String, Object> row : rows ) {
+
+		for (Map<String, Object> row : rows) {
 			boards.add(new Board(row));
 		}
-		
+
 		return boards;
 	}
 
@@ -65,11 +66,11 @@ public class ArticleDao {
 		sb.append(String.format("AND `code` = '%s' ", code));
 
 		Map<String, Object> row = dbConnection.selectRow(sb.toString());
-		
-		if ( row.isEmpty() ) {
+
+		if (row.isEmpty()) {
 			return null;
 		}
-		
+
 		return new Board(row);
 	}
 
@@ -106,11 +107,11 @@ public class ArticleDao {
 		sb.append(String.format("AND `id` = '%d' ", id));
 
 		Map<String, Object> row = dbConnection.selectRow(sb.toString());
-		
-		if ( row.isEmpty() ) {
+
+		if (row.isEmpty()) {
 			return null;
 		}
-		
+
 		return new Board(row);
 	}
 
@@ -124,12 +125,28 @@ public class ArticleDao {
 
 		List<Article> articles = new ArrayList<>();
 		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
-		
-		for ( Map<String, Object> row : rows ) {
+
+		for (Map<String, Object> row : rows) {
 			articles.add(new Article(row));
 		}
-		
+
 		return articles;
+	}
+
+	public Article getArticlesById(int number) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("SELECT * "));
+		sb.append(String.format("FROM `article` "));
+		sb.append(String.format(" WHERE id = '%d'", number));
+
+		Map<String, Object> row = dbConnection.selectRow(sb.toString());
+
+		if (row.isEmpty()) {
+			return null;
+		}
+
+		return new Article(row);
 	}
 
 	public int isExistArticle(int number) {
@@ -151,8 +168,8 @@ public class ArticleDao {
 		sb.append(String.format("SET title = '%s'", title));
 		sb.append(String.format(", `body` = '%s'", body));
 		sb.append(String.format(" WHERE id = '%d'", number));
-		
-		return dbConnection.update(sb.toString());		
+
+		return dbConnection.update(sb.toString());
 	}
 
 	public int deleteArticle(int number) {
@@ -162,6 +179,36 @@ public class ArticleDao {
 
 		return dbConnection.delete(sb.toString());
 
+	}
+
+	public int replyArticle(ArticleReply articleReply) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("INSERT INTO article "));
+		sb.append(String.format("SET regDate = '%s' ", articleReply.getRegDate()));
+		sb.append(String.format(", `body` = '%s' ", articleReply.getBody()));
+		sb.append(String.format(", `memberId` = '%d' ", articleReply.getMemberId()));
+		sb.append(String.format(", `articleId` = '%d' ", articleReply.getArticleId()));
+
+		return dbConnection.insert(sb.toString());
+	}
+
+	public List<ArticleReply> getArticleRepliesByArticleId(int articleId) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("SELECT * "));
+		sb.append(String.format("FROM `articleReply` "));
+		sb.append(String.format("WHERE articleId = '%d' ", articleId));
+		sb.append(String.format("ORDER BY id DESC "));
+
+		List<ArticleReply> articleReplies = new ArrayList<>();
+		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
+
+		for (Map<String, Object> row : rows) {
+			articleReplies.add(new ArticleReply(row));
+		}
+
+		return articleReplies;
 	}
 
 }

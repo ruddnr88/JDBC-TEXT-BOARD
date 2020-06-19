@@ -1,17 +1,22 @@
 package com.sbs.example.demo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sbs.example.demo.dao.ArticleDao;
 import com.sbs.example.demo.dto.Article;
+import com.sbs.example.demo.dto.ArticleReply;
 import com.sbs.example.demo.dto.Board;
+import com.sbs.example.demo.dto.Member;
 import com.sbs.example.demo.factory.Factory;
 
 public class ArticleService {
 	private ArticleDao articleDao;
+	private MemberService memberService;
 
 	public ArticleService() {
 		articleDao = Factory.getArticleDao();
+		memberService = Factory.getMemberService();
 	}
 
 	public List<Article> getArticlesByBoardCode(String code) {
@@ -53,6 +58,11 @@ public class ArticleService {
 			makeBoard(name, code);
 		}
 	}
+	
+	public Member getMemberName(int id) {
+		return memberService.getMember(id);
+	}
+	
 
 	public Board getBoardByCode(String boardCode) {
 		return articleDao.getBoardByCode(boardCode);
@@ -69,5 +79,20 @@ public class ArticleService {
 	public int deleteArticle(int number) {
 		return articleDao.deleteArticle(number);
 	}
+
+	public Article getArticlesById(int number) {
+		return articleDao.getArticlesById(number);
+	}
+	
+	public int replyArticle(int memberId, int articleId,int number,String body) {
+		ArticleReply articleReply = new ArticleReply();
+		return articleDao.replyArticle(articleReply);
+	}
+
+	public List<ArticleReply> getArticleRepliesByArticleId(int id) {
+		return articleDao.getArticleRepliesByArticleId(id);
+	}
+
+	
 
 }

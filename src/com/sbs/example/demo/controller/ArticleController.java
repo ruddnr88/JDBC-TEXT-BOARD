@@ -1,14 +1,19 @@
 package com.sbs.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sbs.example.demo.dto.Article;
+import com.sbs.example.demo.dto.ArticleReply;
 import com.sbs.example.demo.dto.Board;
+import com.sbs.example.demo.dto.Member;
 import com.sbs.example.demo.factory.Factory;
 import com.sbs.example.demo.service.ArticleService;
+import com.sbs.example.demo.service.MemberService;
 
 public class ArticleController extends Controller {
 	private ArticleService articleService;
+	private MemberService memberService;
 
 	public ArticleController() {
 		articleService = Factory.getArticleService();
@@ -18,16 +23,89 @@ public class ArticleController extends Controller {
 		if (reqeust.getActionName().equals("list")) {
 			actionList(reqeust);
 		} else if (reqeust.getActionName().equals("write")) {
-			actionWrite(reqeust);
+			if (Factory.getSession().isLogined() == false) {
+				System.out.println("현재 로그인 상태가 아닙니다.");
+			} else {
+				actionWrite(reqeust);
+			}
+
 		} else if (reqeust.getActionName().equals("modify")) {
 			actionModify(reqeust);
 		} else if (reqeust.getActionName().equals("delete")) {
 			actionDelete(reqeust);
+		} else if (reqeust.getActionName().equals("detail")) {
+			actionDetail(reqeust);
 		} else if (reqeust.getActionName().equals("changeBoard")) {
 			actionChangeBoard(reqeust);
 		} else if (reqeust.getActionName().equals("currentBoard")) {
 			actionCurrentBoard(reqeust);
 		}
+	}
+
+	private void actionDetail(Request reqeust) {
+		System.out.println("== 게시물 상세보기 ==");
+		int number = -1;
+		try {
+			number = Integer.parseInt(reqeust.getArg1());
+
+		} catch (Exception e) {
+			System.out.println("게시물 번호를 숫자로 입력해주세요.");
+		}
+
+		Article article = articleService.getArticlesById(number);
+
+		if (article == null) {
+			System.out.println("해당 게시물은 존재하지 않습니다.");
+			return;
+		}
+
+		String writerName = getMember(article.getMemberId()).getName();
+
+		List<ArticleReply> articleReplies = articleService.getArticleRepliesByArticleId(article.getId());
+		int repliesCount = articleReplies.size();
+
+//		int WriteId = article.getMemberId();
+//		Member member = memberService.getMember(WriteId);
+//		String articleN = member.getName();
+		System.out.printf("번호 : %d\n", article.getId());
+		System.out.printf("제목 : %s\n", article.getTitle());
+		System.out.printf("날짜 : %s\n", article.getRegDate());
+		System.out.printf("작성자 : %s\n", writerName);
+		System.out.printf("내용 : %s\n", article.getBody());
+		System.out.printf("댓글개수 : %d\n", repliesCount);
+
+		for (ArticleReply articleReply : articleReplies) {
+			Member replyWriter = memberService.getMember(articleReply.getMemberId());
+			String replyWriterName = replyWriter.getName();
+
+			System.out.printf("%d번 댓글 : %s by %s\n", articleReply.getId(), articleReply.getBody(), replyWriterName);
+		}
+		System.out.printf("댓글을 작성하시겠습니까?  y/n :\n");
+		String command = Factory.getScanner().nextLine().trim();
+		if (command.equals("y")) {
+			actionReply(reqeust);
+		}
+
+	}
+
+	//댓글 오류있음!! 값이 없때..ㅠㅠ 
+	private void actionReply(Request reqeust) {
+
+		System.out.printf("내용 : ");
+		String body = Factory.getScanner().nextLine();
+		
+
+		int memberId = Factory.getSession().getLoginedMember().getId();
+		int articleId = Factory.getSession().getCurrentArticle().getId();
+
+		int newId = articleService.replyArticle(memberId, articleId, articleId, body);
+
+		System.out.printf("%d번 댓글이 생성되었습니다.\n", newId);
+
+	}
+
+	private Member getMember(int memberId) {
+		return articleService.getMemberName(memberId);
 	}
 
 	private void actionDelete(Request reqeust) {
@@ -45,7 +123,7 @@ public class ArticleController extends Controller {
 			System.out.printf("%s번 게시물이 삭제되었습니다.\n", number);
 		} else if (result == -1) {
 			System.out.println("삭제할 게시물이 존재하지 않습니다.");
-		}		
+		}
 	}
 
 	private void actionModify(Request reqeust) {
@@ -93,12 +171,11 @@ public class ArticleController extends Controller {
 	private void actionList(Request reqeust) {
 		Board currentBoard = Factory.getSession().getCurrentBoard();
 		List<Article> articles = articleService.getArticlesByBoardCode(currentBoard.getCode());
-		String articleName = Factory.getSession().getLoginedMember().getName();
 
 		System.out.printf("== %s 게시물 리스트 시작 ==\n", currentBoard.getName());
-		System.out.printf("%-2s|%-25s|%-28s|%-20s\n", "번호", "날짜", "제목", "작성자");
+		System.out.printf("%-2s|%-25s|%-28s\n", "번호", "날짜", "제목");
 		for (Article article : articles) {
-			System.out.printf("%-4d|%-27s|%-30s|%-18s\n", article.getId(), article.getRegDate(), article.getTitle(),articleName);
+			System.out.printf("%-4d|%-27s|%-30s\n", article.getId(), article.getRegDate(), article.getTitle());
 		}
 		System.out.printf("== %s 게시물 리스트 끝 ==\n", currentBoard.getName());
 	}

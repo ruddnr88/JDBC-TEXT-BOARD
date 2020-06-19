@@ -14,6 +14,15 @@ public class MemberService {
 	public Member getMemberByLoginIdAndLoginPw(String loginId, String loginPw) {
 		return memberDao.getMemberByLoginIdAndLoginPw(loginId, loginPw);
 	}
+	
+	public boolean isUsedLoginId(String loginId) {
+		Member member = memberDao.getMemberByLoginId(loginId);
+
+		if (member == null) {
+			return false;
+		}
+		return true;
+	}
 
 	public int join(String loginId, String loginPw, String name) {
 		Member oldMember = memberDao.getMemberByLoginId(loginId);
