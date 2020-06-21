@@ -1,8 +1,8 @@
 # site3 데이터베이스가 이미 존재한다면 삭제
-DROP DATABASE IF EXISTS site8;
-# site 8 데이터베이스 생성
-CREATE DATABASE site8;
-USE site8;
+DROP DATABASE IF EXISTS site3;
+# site 3 데이터베이스 생성
+CREATE DATABASE site3;
+USE site3;
 
 # 테이블 목록 보여주기
 SHOW TABLES;

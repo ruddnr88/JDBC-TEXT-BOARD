@@ -184,7 +184,7 @@ public class ArticleDao {
 	public int replyArticle(ArticleReply articleReply) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(String.format("INSERT INTO article "));
+		sb.append(String.format("INSERT INTO articleReply "));
 		sb.append(String.format("SET regDate = '%s' ", articleReply.getRegDate()));
 		sb.append(String.format(", `body` = '%s' ", articleReply.getBody()));
 		sb.append(String.format(", `memberId` = '%d' ", articleReply.getMemberId()));

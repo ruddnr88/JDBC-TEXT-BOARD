@@ -84,7 +84,7 @@ public class ArticleService {
 		return articleDao.getArticlesById(number);
 	}
 	
-	public int replyArticle(int memberId, int articleId,int number,String body) {
+	public int replyArticle(int memberId, String body) {
 		ArticleReply articleReply = new ArticleReply();
 		return articleDao.replyArticle(articleReply);
 	}

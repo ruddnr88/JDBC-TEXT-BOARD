@@ -73,18 +73,13 @@ public class ArticleController extends Controller {
 		System.out.printf("작성자 : %s\n", writerName);
 		System.out.printf("내용 : %s\n", article.getBody());
 		System.out.printf("댓글개수 : %d\n", repliesCount);
-
-		for (ArticleReply articleReply : articleReplies) {
-			Member replyWriter = memberService.getMember(articleReply.getMemberId());
-			String replyWriterName = replyWriter.getName();
-
+		
+		for ( ArticleReply articleReply : articleReplies ) {
+			String replyWriterName = getMember(article.getMemberId()).getName();
+			
 			System.out.printf("%d번 댓글 : %s by %s\n", articleReply.getId(), articleReply.getBody(), replyWriterName);
 		}
-		System.out.printf("댓글을 작성하시겠습니까?  y/n :\n");
-		String command = Factory.getScanner().nextLine().trim();
-		if (command.equals("y")) {
-			actionReply(reqeust);
-		}
+	
 
 	}
 
@@ -92,13 +87,12 @@ public class ArticleController extends Controller {
 	private void actionReply(Request reqeust) {
 
 		System.out.printf("내용 : ");
-		String body = Factory.getScanner().nextLine();
+		String replyBody = Factory.getScanner().nextLine();
 		
 
 		int memberId = Factory.getSession().getLoginedMember().getId();
-		int articleId = Factory.getSession().getCurrentArticle().getId();
 
-		int newId = articleService.replyArticle(memberId, articleId, articleId, body);
+		int newId = articleService.replyArticle(memberId,replyBody);
 
 		System.out.printf("%d번 댓글이 생성되었습니다.\n", newId);
 
@@ -171,11 +165,12 @@ public class ArticleController extends Controller {
 	private void actionList(Request reqeust) {
 		Board currentBoard = Factory.getSession().getCurrentBoard();
 		List<Article> articles = articleService.getArticlesByBoardCode(currentBoard.getCode());
+	
 
 		System.out.printf("== %s 게시물 리스트 시작 ==\n", currentBoard.getName());
-		System.out.printf("%-2s|%-25s|%-28s\n", "번호", "날짜", "제목");
+		System.out.printf("%-2s|%-25s|%-28s|%-10s\n", "번호", "날짜", "제목","작성자");
 		for (Article article : articles) {
-			System.out.printf("%-4d|%-27s|%-30s\n", article.getId(), article.getRegDate(), article.getTitle());
+			System.out.printf("%-4d|%-27s|%-30s|%-8s\n", article.getId(), article.getRegDate(), article.getTitle(),getMember(article.getMemberId()).getName());
 		}
 		System.out.printf("== %s 게시물 리스트 끝 ==\n", currentBoard.getName());
 	}

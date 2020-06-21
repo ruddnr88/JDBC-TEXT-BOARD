@@ -29,7 +29,7 @@ public class App {
 		initControllers();
 
 		// DB 정보세팅
-		DBConnection.DB_NAME = "site8";
+		DBConnection.DB_NAME = "site3";
 		DBConnection.DB_USER = "sbsst";
 		DBConnection.DB_PASSWORD = "sbs123414";
 		DBConnection.DB_PORT = 3306;
