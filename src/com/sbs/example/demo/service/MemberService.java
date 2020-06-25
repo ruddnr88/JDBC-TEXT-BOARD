@@ -24,7 +24,7 @@ public class MemberService {
 		return true;
 	}
 
-	public int join(String loginId, String loginPw, String name) {
+	public int join(String name, String loginId, String loginPw) {
 		Member oldMember = memberDao.getMemberByLoginId(loginId);
 
 		if (oldMember != null) {
@@ -43,7 +43,7 @@ public class MemberService {
 		Member member = memberDao.getMemberByLoginId("admin");
 		
 		if (member == null) {
-			join("admin", "admin", "관리자");
+			join("관리자", "admin", "admin");
 		}
 	}
 }

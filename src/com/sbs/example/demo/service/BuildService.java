@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sbs.example.demo.dto.Article;
 import com.sbs.example.demo.dto.Board;
+import com.sbs.example.demo.dto.Member;
 import com.sbs.example.demo.factory.Factory;
 import com.sbs.example.demo.util.Util;
 
@@ -29,7 +30,6 @@ public class BuildService {
 			String fileName = board.getCode() + "-list-1.html";
 
 			String html = "";
-
 			List<Article> articles = articleService.getArticlesByBoardCode(board.getCode());
 
 			String template = Util.getFileContents("site_template/article/list.html");
@@ -39,6 +39,7 @@ public class BuildService {
 				html += "<td>" + article.getId() + "</td>";
 				html += "<td>" + article.getRegDate() + "</td>";
 				html += "<td><a href=\"" + article.getId() + ".html\">" + article.getTitle() + "</a></td>";
+				html += "<td>" + getMember(article.getMemberId()).getName()+ "</td>";
 				html += "</tr>";
 			}
 
@@ -64,6 +65,9 @@ public class BuildService {
 
 			Util.writeFileContents("site/article/" + article.getId() + ".html", html);
 		}
+	}
+	private Member getMember(int memberId) {
+		return articleService.getMemberName(memberId);
 	}
 
 }

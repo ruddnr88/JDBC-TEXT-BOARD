@@ -73,6 +73,11 @@ public class ArticleController extends Controller {
 		System.out.printf("작성자 : %s\n", writerName);
 		System.out.printf("내용 : %s\n", article.getBody());
 		System.out.printf("댓글개수 : %d\n", repliesCount);
+		System.out.printf("댓글을 남기시겠습니까? y/n ");
+		String answer = Factory.getScanner().nextLine();
+		if(answer.equals("y")) {
+			actionReply(reqeust);
+		}
 		
 		for ( ArticleReply articleReply : articleReplies ) {
 			String replyWriterName = getMember(article.getMemberId()).getName();
